@@ -19,6 +19,7 @@
 #include <linux/input.h>
 #include <linux/input/mt.h>
 #include <linux/input/touchscreen.h>
+#include <linux/interrupt.h>
 #include <linux/mod_devicetable.h>
 #include <linux/module.h>
 #include <linux/property.h>
@@ -64,6 +65,22 @@ struct hynitron_ts_data {
 #define CST3XX_TOUCH_DATA_STOP_CMD		0xab00d0
 #define CST3XX_TOUCH_COUNT_MASK			GENMASK(6, 0)
 
+static inline void fsleep(unsigned long usecs)
+{
+	if (usecs <= 10)
+		udelay(usecs);
+	else if (usecs <= 20000)
+		usleep_range(usecs, 2 * usecs);
+	else
+		msleep(DIV_ROUND_UP(usecs, 1000));
+}
+
+static inline void put_unaligned_le24(u32 val, u8 *p)
+{
+	*p++ = val;
+	*p++ = val >> 8;
+	*p++ = val >> 16;
+}
 
 /*
  * Hard coded reset delay value of 20ms not IC dependent in
