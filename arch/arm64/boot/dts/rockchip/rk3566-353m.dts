@@ -1079,26 +1079,17 @@
 &i2c2 {
     status = "okay";
     pinctrl-0 = <&i2c2m1_xfer>;
-    i2c-scl-rising-time-ns = <0x90>;
-    i2c-scl-falling-time-ns = <0x04>;
 
-    hynitron_ts@1a {
+    touch@1a {
         compatible = "hynitron,cst340";
         reg = <0x1a>;
-        interrupt-parent = <&gpio4>; // gpio@fe770000
-        interrupts = <0x09 0x02>;
-        hynitron,irq-gpio = <&gpio4 0x09 0x01>; // gpio@fe770000
-        hynitron,reset-gpio = <&gpio4 0x06 0x01>; // gpio@fe770000
+        interrupt-parent = <&gpio4>;
+        interrupts = <RK_PB1 IRQ_TYPE_EDGE_FALLING>;
+        pinctrl-0 = <&touch_gpio>;
         pinctrl-names = "default";
-        pinctrl-0 = <&touch_gpio>; // touch-gpio
-        hynitron,max-touch-number = <0x05>;
-        hynitron,display-coords = <0x280 0x1e0>;
-        hynitron,have-key;
-        hynitron,key-number = <0x03>;
-        hynitron,key-code = <0x8b 0xac 0x9e>;
-        hynitron,key-y-coord = <0x7d0 0x7d0 0x7d0>;
-        hynitron,key-x-coord = <0xc8 0x258 0x320>;
-        status = "okay";
+        reset-gpios = <&gpio4 RK_PA6 GPIO_ACTIVE_LOW>;
+        touchscreen-size-x = <640>;
+        touchscreen-size-y = <480>;
     };
 };
 
